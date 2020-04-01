@@ -1,11 +1,16 @@
 package org.firstinspires.ftc.teamcode.PurePursuit;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.openftc.revextensions2.ExpansionHubEx;
+import org.openftc.revextensions2.RevBulkData;
+
 
 public class BulkReadHandler {
 
-    private ExpansionHubEx hub2, hub3;
-    private RevBulkData bulkData2, bulkData3;
+    private ExpansionHubEx hub1, hub5;
+    private RevBulkData bulkData1, bulkData5;
 
     private int ticksFromStart;
     private double lastT;
@@ -13,8 +18,8 @@ public class BulkReadHandler {
     //BULK READ HANDLER?! not gonna lie it do be reading data in bulk -(¤.¤)-
     public BulkReadHandler(OpMode op)
     {
-        hub2 = op.hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2"); //change
-        hub3 = op.hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 3");
+        hub1 = op.hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 1");
+        hub5 = op.hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 5");
 
         lastT = System.nanoTime();
         lastDeltaT = 1;
@@ -24,8 +29,8 @@ public class BulkReadHandler {
     }
 
     public void readData(){
-        bulkData2 = hub2.getBulkInputData();
-        bulkData3 = hub3.getBulkInputData();
+        bulkData1 = hub1.getBulkInputData();
+        bulkData5 = hub5.getBulkInputData();
 
         long time = System.nanoTime();
         lastDeltaT = time - lastT;
@@ -34,23 +39,23 @@ public class BulkReadHandler {
     }
 
     public double getMiddleOdomPos(){
-        return bulkData2.getMotorCurrentPosition(2);
+        return bulkData5.getMotorCurrentPosition(2);
     }
 
     public double getLeftOdomPos(){
-        return bulkData2.getMotorCurrentPosition(3);
+        return bulkData1.getMotorCurrentPosition(2);
     }
 
     public double getRightOdomPos(){
-        return bulkData3.getMotorCurrentPosition(0);
+        return -bulkData5.getMotorCurrentPosition(3);
     }
 
-    public ExpansionHubEx getHub2(){
-        return hub2;
+    public ExpansionHubEx getHub1(){
+        return hub1;
     }
 
-    public ExpansionHubEx getHub3(){
-        return hub3;
+    public ExpansionHubEx getHub5(){
+        return hub5;
     }
 
     public double getLastDeltaT(){
@@ -59,6 +64,12 @@ public class BulkReadHandler {
 
     public double getLastTickrate(){
         return 1000000000 / lastDeltaT;
+    }
+
+    public void reset(OpMode op) {
+        op.hardwareMap.get(DcMotor.class, "intakeLeft").setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        op.hardwareMap.get(DcMotor.class, "intakeRight").setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        op.hardwareMap.get(DcMotor.class, "rV").setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public int getTicksFromStart(){

@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.PurePursuit;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Motor.Drivetrain;
+import org.firstinspires.ftc.teamcode.Hardware.Drivetrain;
 
 public class RobotMovement {
 
@@ -22,7 +22,7 @@ public class RobotMovement {
         headingPID.setTarget(0.0);
     }
 
-    public static boolean driveTowardPoint(Drivetrain dt, State state, Telemetry telemetry, boolean isLastPoint, int reverse) {
+    public static boolean driveTowardPoint(Drivetrain dt, Telemetry telemetry, boolean isLastPoint, int reverse) {
         //1 for reverse, 0 for not
 
         double dX = targetPoint.getX() - dt.getX();
@@ -59,14 +59,14 @@ public class RobotMovement {
         }
 
         if (Math.abs(distToPoint) < targetPoint.getTolerance()) {
-            dt.drive(0, 0, 0, state);
+            dt.drive(0, 0, 0);
             return true;
         }
 
         telemetry.addData("Distance to Point", distToPoint);
         telemetry.addData("Drive Speed", driveSpeed);
 
-        dt.drive(driveSpeed, dirToPoint, turnSpeed, state);
+        dt.drive(driveSpeed, dirToPoint, turnSpeed);
         lastTTheta = tTheta;
         return false;
     }

@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.PurePursuit;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.Motor.Drivetrain;
+import org.firstinspires.ftc.teamcode.Hardware.Drivetrain;
 
 import java.util.ArrayList;
 
@@ -16,11 +16,11 @@ public class PurePursuit {
         this.currentPoint = 1;
     }
 
-    public boolean purePursuit(Drivetrain dt, State state, OpMode op, double speed, double turnSpeed, double lookahead, int reverse) {
+    public boolean purePursuit(Drivetrain dt, OpMode op, double speed, double turnSpeed, double lookahead, int reverse) {
         op.telemetry.addLine("Point: " + currentPoint); //Add the current point to telemetry
-        if (currentPoint == points.size() - 1) { //last point?
+        if (currentPoint == points.size() - 1) { //last point
             RobotMovement.setPoint(points.get(currentPoint), speed, turnSpeed); //set point to the last point
-            return RobotMovement.driveTowardPoint(dt, state, op.telemetry, true, reverse); //drive towards last point and return result
+            return RobotMovement.driveTowardPoint(dt, op.telemetry, true, reverse); //drive towards last point and return result
         } else {
             double[] intersections1 = getIntersections(points.get(currentPoint - 1), points.get(currentPoint), dt.getX(), dt.getY(), lookahead); //first intersect
             double[] intersections2 = getIntersections(points.get(currentPoint), points.get(currentPoint + 1), dt.getX(), dt.getY(), lookahead); //second intersect
@@ -37,7 +37,7 @@ public class PurePursuit {
                 RobotMovement.setPoint(points.get(currentPoint), speed, turnSpeed);
             }
         }
-        RobotMovement.driveTowardPoint(dt, state, op.telemetry, false, reverse);
+        RobotMovement.driveTowardPoint(dt, op.telemetry, false, reverse);
         return false;
     }
 
@@ -62,7 +62,7 @@ public class PurePursuit {
         double xi2 = ((m * m * x1) - (m * y1) - Math.sqrt(deter)) / (m * m + 1);
 
         double yi1 = (m * (xi1 - x1)) + y1 + y; //globalizing them points once again yeayea
-        double yi2 = (m * (xi1 - x1)) + y1 + y;
+        double yi2 = (m * (xi2 - x1)) + y1 + y;
         xi1 += x;
         xi2 += x; //why does this exist?
 

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Motor;
+package org.firstinspires.ftc.teamcode.Hardware;
 
 public class OdometryWheel {
 

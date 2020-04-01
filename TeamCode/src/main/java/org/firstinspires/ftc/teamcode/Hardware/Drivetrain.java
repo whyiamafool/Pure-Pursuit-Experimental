@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Motor;
+package org.firstinspires.ftc.teamcode.Hardware;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -21,9 +21,10 @@ public class Drivetrain {
 
     private double angleOffset;
 
-    private static double TRACK_WIDTH = 365.95;
+    private static double TRACK_WIDTH = 359.16;
     private static double REAR_DIST = 65;
 
+    private double debugTheta;
     private double theta;
     private double x;
     private double y;
@@ -41,7 +42,7 @@ public class Drivetrain {
         fr = new Motor("fr", op);
         br = new Motor("br", op);
 
-        odoL = new OdometryWheel(true);
+        odoL = new OdometryWheel(false);
         odoM = new OdometryWheel(false);
         odoR = new OdometryWheel(false);
 
@@ -53,10 +54,10 @@ public class Drivetrain {
         br.resetEncoder();
         fr.resetEncoder();
 
-        fl.setConstants(DcMotor.RunMode.RUN_WITHOUT_ENCODER, DcMotor.ZeroPowerBehavior.BRAKE, DcMotorSimple.Direction.FORWARD);
-        bl.setConstants(DcMotor.RunMode.RUN_WITHOUT_ENCODER, DcMotor.ZeroPowerBehavior.BRAKE, DcMotorSimple.Direction.FORWARD);
-        fr.setConstants(DcMotor.RunMode.RUN_WITHOUT_ENCODER, DcMotor.ZeroPowerBehavior.BRAKE, DcMotorSimple.Direction.REVERSE);
-        br.setConstants(DcMotor.RunMode.RUN_WITHOUT_ENCODER, DcMotor.ZeroPowerBehavior.BRAKE, DcMotorSimple.Direction.REVERSE);
+        fl.setConstants(DcMotor.RunMode.RUN_WITHOUT_ENCODER, DcMotor.ZeroPowerBehavior.BRAKE, DcMotorSimple.Direction.REVERSE);
+        bl.setConstants(DcMotor.RunMode.RUN_WITHOUT_ENCODER, DcMotor.ZeroPowerBehavior.BRAKE, DcMotorSimple.Direction.REVERSE);
+        fr.setConstants(DcMotor.RunMode.RUN_WITHOUT_ENCODER, DcMotor.ZeroPowerBehavior.BRAKE, DcMotorSimple.Direction.FORWARD);
+        br.setConstants(DcMotor.RunMode.RUN_WITHOUT_ENCODER, DcMotor.ZeroPowerBehavior.BRAKE, DcMotorSimple.Direction.FORWARD);
 
         lastFL = 0;
         lastBL = 0;
@@ -66,7 +67,7 @@ public class Drivetrain {
         angleOffset = 0;
     }
 
-    public void drive(double power, double theta, double turn, State state) {
+    public void drive(double power, double theta, double turn) {
         double x = power * Math.cos(theta) * 1.5;
         double y = power * Math.sin(theta);
 
@@ -101,6 +102,7 @@ public class Drivetrain {
         odoM.tick(bulk.getMiddleOdomPos());
         odoR.tick(bulk.getRightOdomPos());
 
+        debugTheta = (bulk.getRightOdomPos() - bulk.getLeftOdomPos())/TRACK_WIDTH;
         double dTheta = Math.toRadians((bulk.getRightOdomPos() - bulk.getLeftOdomPos())/TRACK_WIDTH); //is this in radians?
         double ldX = odoM.getDeltaMM() - REAR_DIST * (dTheta - theta);
         double ldY = (odoR.getDeltaMM() + odoL.getDeltaMM()) / 2;
@@ -120,7 +122,7 @@ public class Drivetrain {
         odoM.tick(bulk.getMiddleOdomPos());
         odoR.tick(bulk.getRightOdomPos());
 
-        telem.addData("leftCounts", -bulk.getLeftOdomPos()); //check to see if negatives are necessary
+        telem.addData("leftCounts", bulk.getLeftOdomPos()); //check to see if negatives are necessary
         telem.addData("midCounts", bulk.getMiddleOdomPos());
         telem.addData("rightCounts", bulk.getRightOdomPos());
 
@@ -155,6 +157,18 @@ public class Drivetrain {
 
     public double getTheta() {
         return theta;
+    }
+
+    public double dtLeft(BulkReadHandler bulk) {
+        return bulk.getLeftOdomPos();
+    }
+
+    public double dtRight(BulkReadHandler bulk) {
+        return bulk.getRightOdomPos();
+    }
+
+    public double dtStrafe(BulkReadHandler bulk) {
+        return bulk.getMiddleOdomPos();
     }
 
     public void setPos(double x, double y, double theta) {
