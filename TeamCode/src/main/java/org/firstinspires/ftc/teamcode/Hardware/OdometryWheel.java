@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode.Hardware;
 
 public class OdometryWheel {
 
-    static final double CPR = 360;
-    static final double WHEEL_DIAM = 58;
+    static final double CPR = 1440;
+    static final double WHEEL_DIAM = 58.4;
     static final double COUNTS_PER_MM = CPR / (WHEEL_DIAM * Math.PI);
 
     private double lastMM;

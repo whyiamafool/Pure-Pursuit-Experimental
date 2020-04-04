@@ -21,8 +21,8 @@ public class Drivetrain {
 
     private double angleOffset;
 
-    private static double TRACK_WIDTH = 359.16;
-    private static double REAR_DIST = 65;
+    private static double TRACK_WIDTH = 356.66; //359.16
+    private static double REAR_DIST = 46.94;
 
     private double debugTheta;
     private double theta;
@@ -103,7 +103,8 @@ public class Drivetrain {
         odoR.tick(bulk.getRightOdomPos());
 
         debugTheta = (bulk.getRightOdomPos() - bulk.getLeftOdomPos())/TRACK_WIDTH;
-        double dTheta = Math.toRadians((bulk.getRightOdomPos() - bulk.getLeftOdomPos())/TRACK_WIDTH); //is this in radians?
+        double dTheta = (odoR.getLastMM() - odoL.getLastMM()) / TRACK_WIDTH; //new version
+        //double dTheta = Math.toRadians((bulk.getRightOdomPos() - bulk.getLeftOdomPos())/TRACK_WIDTH); //is this in radians?
         double ldX = odoM.getDeltaMM() - REAR_DIST * (dTheta - theta);
         double ldY = (odoR.getDeltaMM() + odoL.getDeltaMM()) / 2;
 
@@ -157,18 +158,6 @@ public class Drivetrain {
 
     public double getTheta() {
         return theta;
-    }
-
-    public double dtLeft(BulkReadHandler bulk) {
-        return bulk.getLeftOdomPos();
-    }
-
-    public double dtRight(BulkReadHandler bulk) {
-        return bulk.getRightOdomPos();
-    }
-
-    public double dtStrafe(BulkReadHandler bulk) {
-        return bulk.getMiddleOdomPos();
     }
 
     public void setPos(double x, double y, double theta) {
