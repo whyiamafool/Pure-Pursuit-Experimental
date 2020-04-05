@@ -42,6 +42,7 @@ public class OdoTesting extends LinearOpMode {
             dt.drive(r, theta, turn);
 
             telemetry.clear();
+            telemetry.addData("counts", dt.getCounts());
             telemetry.addLine("LEFT: " + (bulk.getLeftOdomPos() - initLeft));
             telemetry.addLine("RIGHT: " + (bulk.getRightOdomPos() - initRight));
             telemetry.addLine("STRAFE: " + (bulk.getMiddleOdomPos() - initStrafe));

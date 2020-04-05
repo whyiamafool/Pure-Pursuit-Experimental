@@ -8,6 +8,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.PurePursuit.BulkReadHandler;
 import org.firstinspires.ftc.teamcode.PurePursuit.State;
 
+import java.util.ArrayList;
+
 public class Drivetrain {
 
     private Motor fl;
@@ -21,7 +23,7 @@ public class Drivetrain {
 
     private double angleOffset;
 
-    private static double TRACK_WIDTH = 356.66; //359.16
+    private static double TRACK_WIDTH = 360.875; //359.16
     private static double REAR_DIST = 46.94;
 
     private double debugTheta;
@@ -42,9 +44,9 @@ public class Drivetrain {
         fr = new Motor("fr", op);
         br = new Motor("br", op);
 
-        odoL = new OdometryWheel(false);
-        odoM = new OdometryWheel(false);
-        odoR = new OdometryWheel(false);
+        odoL = new OdometryWheel(false, 58.7); //manipulating the diameters to fit 24"
+        odoM = new OdometryWheel(false, 58.45);
+        odoR = new OdometryWheel(false, 58.7);
 
         /*if(!istele)
             gyro = new Gyro(op);*/
@@ -158,6 +160,16 @@ public class Drivetrain {
 
     public double getTheta() {
         return theta;
+    }
+
+    public ArrayList<Double> getCounts() {
+
+        ArrayList<Double> arrayList = new ArrayList<Double>();
+        arrayList.add(odoL.getCounts());
+        arrayList.add(odoM.getCounts());
+        arrayList.add(odoR.getCounts());
+
+        return arrayList;
     }
 
     public void setPos(double x, double y, double theta) {
